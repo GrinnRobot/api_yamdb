@@ -19,6 +19,8 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include('api.urls', namespace='api')),
+    # path('api/v1/', include('reviews.urls', namespace='reviews')),
     path('api/v1/', include('users.urls', namespace='users')),
     path(
         'redoc/',
