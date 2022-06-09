@@ -3,7 +3,7 @@ from rest_framework.routers import SimpleRouter
 
 from .views import CategoriesViewSet, GenresViewSet, TitlesViewSet
 
-app_name = 'cgt'
+app_name = 'reviews'
 
 router = SimpleRouter()
 
