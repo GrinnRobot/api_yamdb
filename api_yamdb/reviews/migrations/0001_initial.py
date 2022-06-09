@@ -35,8 +35,8 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=256, verbose_name='Произведение')),
                 ('year', models.IntegerField(verbose_name='Дата выхода')),
                 ('description', models.TextField(blank=True, null=True, verbose_name='Описание')),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='titles', to='cgt.Category', verbose_name='Категория')),
-                ('genre', models.ManyToManyField(related_name='titles', to='cgt.Genre', verbose_name='Жанр')),
+                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='titles', to='reviews.Category', verbose_name='Категория')),
+                ('genre', models.ManyToManyField(related_name='titles', to='reviews.Genre', verbose_name='Жанр')),
             ],
         ),
     ]
