@@ -1,9 +1,35 @@
-from rest_framework import viewsets, mixins, filters
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, mixins, viewsets
+from rest_framework.pagination import LimitOffsetPagination
 
 from reviews.models import Category, Genre, Title
 from .permissions import IsMyAdminOrReadOnly
 from .serializers import (CategoriesSerializer, GenresSerializer,
-                          TitlesSerializer)
+                          TitlesGetSerializer, TitlesPostSerializer)
+
+
+class TitleFilter(django_filters.FilterSet):
+    genre = django_filters.CharFilter(
+        field_name="genre__slug",
+        lookup_expr='exact'
+    )
+    category = django_filters.CharFilter(
+        field_name="category__slug",
+        lookup_expr='exact'
+    )
+    name = django_filters.CharFilter(
+        field_name="name",
+        lookup_expr='contains'
+    )
+    description = django_filters.CharFilter(
+        field_name="description",
+        lookup_expr='contains'
+    )
+
+    class Meta:
+        model = Title
+        fields = ('name', 'year', 'description', 'genre', 'category')
 
 
 class CategoriesViewSet(mixins.CreateModelMixin,
@@ -32,8 +58,12 @@ class GenresViewSet(mixins.CreateModelMixin,
 
 class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitlesSerializer
     permission_classes = (IsMyAdminOrReadOnly,)
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    pagination_class = LimitOffsetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
+    def get_serializer_class(self):
+        if self.action not in ['retrieve', 'list']:
+            return TitlesPostSerializer
+        return TitlesGetSerializer

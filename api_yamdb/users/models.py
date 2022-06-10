@@ -3,6 +3,9 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Кастомный класс для User. Добавлены поля 'bio' 'role',
+    переопределено поле 'email'. Для удобства добавлены property
+    'is_admin' 'is_moderator' для идентификации новых ролей."""
     USER = 'user'
     MODER = 'moderator'
     ADMIN = 'admin'

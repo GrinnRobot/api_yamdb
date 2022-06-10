@@ -16,6 +16,11 @@ from .serializers import (UserAuthSerializer, UserSerializer,
 
 
 class UserViewSet(ModelViewSet):
+    """Обработка запросов users/ users/<username>/ users/me/.
+    CRUD всех users для админа через api-запросы. Профили для всех
+    аутентифицированных пользователей с возможностью редактирования полей
+    (кроме поля 'role').
+    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
@@ -56,6 +61,9 @@ class UserViewSet(ModelViewSet):
 
 
 class UserAuthView(APIView):
+    """Обработка запроса auth/signup/. Post запрос для создания
+    пользователя через api. Получаем поля 'username', 'email'
+    отправляем код подтверждения регистрации на почту."""
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -69,6 +77,10 @@ class UserAuthView(APIView):
 
 
 class UserTokenView(APIView):
+    """Обработка запроса auth/token/. Post запрос для получения
+    token для дальнейшей аутентификации. Получаем поля 'username',
+    'confirmation_code' и если код валидный и не просрочен отправляем
+    'token', 'срок жизни' токена ACCESS_TOKEN_LIFETIME в settings."""
     permission_classes = (AllowAny,)
 
     def post(self, request):

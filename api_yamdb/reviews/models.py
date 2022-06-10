@@ -1,4 +1,6 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from users.models import User
 
 
 class Category(models.Model):
@@ -54,4 +56,55 @@ class GenreOfTitle(models.Model):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
+    )
+
+
+class Review(models.Model):
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
+    score = models.PositiveSmallIntegerField(
+        default=10,
+        validators=[
+            MinValueValidator(1, "Score must be greater than '1'."),
+            MaxValueValidator(10, "Score must be less than '10'.")
+        ]
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_review'
+            )
+        ]
+
+
+class Comment(models.Model):
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
     )

@@ -9,6 +9,10 @@ from .models import User
 
 
 class UserAuthSerializer(serializers.ModelSerializer):
+    """Сериализатор для UserAuthView. Получение и валидация 'username',
+    'email'. Создание нового 'не активного' пользователя, формирование
+    кода подтверждения и отправка на емэйл (по сути в папку 'sent_emails').
+    """
     username = serializers.SlugField(
         max_length=150,
         required=True
@@ -65,6 +69,8 @@ class UserAuthSerializer(serializers.ModelSerializer):
 
 
 class UserTokenSerializer(serializers.Serializer):
+    """Сериализатор для UserTokenView. Получение и валидация 'username',
+    и 'confirmaition_code'."""
     username = serializers.SlugField(
         required=True,
         max_length=150
@@ -82,6 +88,7 @@ class UserTokenSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для UserViewSet. Валидация берётся из модели."""
 
     class Meta:
         model = User
