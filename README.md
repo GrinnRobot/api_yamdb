@@ -111,4 +111,6 @@ GET-запросы
 
 
 ## Авторы проекта
-
+_[Александр Куров](https://github.com/itsanti)_            
+_[Николай Журавлёв](https://github.com/atl40Nikolay)_              
+_[Егор Буртовой](https://github.com/GrinnRobot)_
