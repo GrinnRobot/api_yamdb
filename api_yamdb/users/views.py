@@ -81,6 +81,6 @@ class UserTokenView(APIView):
         user.save()
         token = RefreshToken.for_user(user)
         return Response(
-            {'token': str(token.access_token)},
+            {'token': token.access_token},
             status=status.HTTP_200_OK
         )

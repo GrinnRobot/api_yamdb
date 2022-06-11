@@ -30,7 +30,7 @@ class Genre(models.Model):
 class Title(models.Model):
     name = models.CharField('Произведение', max_length=256)
 
-    year = models.IntegerField('Дата выхода')
+    year = models.PositiveSmallIntegerField('Дата выхода')
 
     description = models.TextField(
         'Описание',
@@ -64,7 +64,7 @@ class Review(models.Model):
         'Дата публикации отзыва',
         auto_now_add=True
     )
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
         validators=(MinValueValidator(1), MaxValueValidator(10))
     )
@@ -82,7 +82,7 @@ class Review(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date',)
         constraints = [
             models.UniqueConstraint(
                 fields=('author', 'title'),
@@ -118,7 +118,7 @@ class Comment(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.text

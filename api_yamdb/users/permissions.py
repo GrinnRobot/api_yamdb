@@ -7,21 +7,17 @@ class IsAdmin(permissions.BasePermission):
     """Вход только для админа."""
 
     def has_permission(self, request, view):
-        if request.user.is_anonymous:
-            return False
-        if request.user.is_admin:
-            return True
-        return False
+        return bool(request.user.is_authenticated
+                    and request.user.is_admin)
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     """Вход только для чтения, редактирование только для админа."""
 
     def has_permission(self, request, view):
-        return (
-            request.method in permissions.SAFE_METHODS
-            or (request.user.is_authenticated and request.user.is_admin)
-        )
+        return bool((request.method in permissions.SAFE_METHODS)
+                    or (request.user.is_authenticated
+                        and request.user.is_admin))
 
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -36,9 +32,9 @@ class IsStaffOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return request.user.role in (User.ADMIN, User.MODER)
+        return bool(request.user.is_authenticated
+                    and ((request.user == obj.author)
+                         or (request.user.role in (User.ADMIN, User.MODER))))
 
 
 class IsAuthorOrModerator(permissions.BasePermission):
@@ -55,10 +51,3 @@ class IsAuthorOrModerator(permissions.BasePermission):
             or request.user.is_moderator
             or request.user.is_admin
         )
-
-
-class IsCatEatsBats(permissions.BasePermission):
-    """Вход строго запрещён."""
-
-    def has_permission(self, request, view):
-        return False

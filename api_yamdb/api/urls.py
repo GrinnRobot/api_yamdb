@@ -9,15 +9,15 @@ app_name = 'reviews'
 router = SimpleRouter()
 
 router.register(
-    r'categories',
+    'categories',
     CategoriesViewSet, basename='categories'
 )
 router.register(
-    r'genres',
+    'genres',
     GenresViewSet, basename='genres'
 )
 router.register(
-    r'titles',
+    'titles',
     TitlesViewSet, basename='titles'
 )
 router.register(

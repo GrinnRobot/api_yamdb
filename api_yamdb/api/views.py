@@ -1,24 +1,16 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import mixins, viewsets
+from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 from reviews.models import Category, Genre, Review, Title
 from users.permissions import IsAdminOrReadOnly, IsAuthorOrModerator
 
 from .filters import TitleFilter
+from .mixins import BaseViewSet
 from .serializers import (CategoriesSerializer, CommentsSerializer,
                           GenresSerializer, ReviewsSerializer,
                           TitlesGetSerializer, TitlesPostSerializer)
-
-
-class BaseViewSet(
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    pass
 
 
 class CategoriesViewSet(BaseViewSet):

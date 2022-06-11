@@ -38,6 +38,10 @@ class TitlesGetSerializer(serializers.ModelSerializer):
 
 
 class TitlesPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Title
+
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'
@@ -56,12 +60,12 @@ class TitlesPostSerializer(serializers.ModelSerializer):
             )
         return value
 
-    class Meta:
-        fields = '__all__'
-        model = Title
-
 
 class ReviewsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Review
+
     title = serializers.SlugRelatedField(
         slug_field='name',
         read_only=True
@@ -84,12 +88,12 @@ class ReviewsSerializer(serializers.ModelSerializer):
             raise ValidationError('Only one review.')
         return data
 
-    class Meta:
-        fields = '__all__'
-        model = Review
-
 
 class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = Comment
+
     review = serializers.SlugRelatedField(
         slug_field='text',
         read_only=True
@@ -99,7 +103,3 @@ class CommentsSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username'
     )
-
-    class Meta:
-        fields = '__all__'
-        model = Comment
