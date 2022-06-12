@@ -2,6 +2,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from users.models import User
 
+TRUNCATE_TEXT = 30
+
 
 class Category(models.Model):
     name = models.CharField(max_length=256)
@@ -91,6 +93,9 @@ class Review(models.Model):
             )
         ]
 
+    def __str__(self):
+        return self.text[:TRUNCATE_TEXT]
+
 
 class Comment(models.Model):
     review = models.ForeignKey(
@@ -108,3 +113,6 @@ class Comment(models.Model):
         auto_now_add=True,
         db_index=True
     )
+
+    def __str__(self):
+        return self.text[:TRUNCATE_TEXT]

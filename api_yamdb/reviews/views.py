@@ -5,15 +5,31 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from .models import Review, Title
 from .serializers import ReviewsSerializer, CommentsSerializer
-from .permissions import IsStaffOrAuthorOrReadOnly
+from users.permissions import IsStaffOrAuthorOrReadOnly
 
 
 class ReviewsViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewsSerializer
 
+    # def get_serializer_context(self):
+    #     serializer = ReviewsSerializer.include_extra_kwargs
+    #     context = super(CommentsViewSet, self).get_serializer_context()
+    #     return context
+
     def perform_create(self, serializer):
+        # ReviewsSerializer
+        # print(f'KWARGS_VIEW: {self.kwargs}\n')
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
+        # extra_kwargs = {'title': title, }
+
+        # print(f'KWARGS_SERIALIZER: {serializer.get_extra_kwargs()}\n')
+        # serializer.include_extra_kwargs(extra_kwargs)
+        # print(f'KWARGS_SERIALIZER_MODIFIED:
+        # {serializer.get_extra_kwargs(extra_kwargs)}\n')
+        print(f'INSTANCE: {serializer.instance}\n')
+        print(f'CONTEXT: {serializer.context}\n')
+        print(f'DIR: {serializer.__dir__()}')
         serializer.save(title=title, author=self.request.user)
 
     def get_queryset(self):
@@ -24,7 +40,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ('list', 'retrieve'):
             permission_classes = [AllowAny]
-        elif self.action == 'post':
+        elif self.action == 'create':
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsStaffOrAuthorOrReadOnly]
@@ -36,11 +52,8 @@ class CommentsViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
-        # review = get_object_or_404(Review, pk=review_id)
-        serializer.data['author'] = self.request.user
-        serializer.data['review'] = get_object_or_404(Review, pk=review_id)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        review = get_object_or_404(Review, pk=review_id)
+        serializer.save(review=review, author=self.request.user)
 
     def get_queryset(self):
         review_id = self.kwargs.get('review_id')
@@ -50,7 +63,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ('list', 'retrieve'):
             permission_classes = [AllowAny]
-        elif self.action == 'post':
+        elif self.action == 'create':
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsStaffOrAuthorOrReadOnly]

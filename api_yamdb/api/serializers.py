@@ -1,4 +1,5 @@
 import datetime as d
+from django.db.models import Avg
 from rest_framework import serializers
 
 from reviews.models import Genre, Category, Title
@@ -25,21 +26,21 @@ class TitlesGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = (
-            'id', 'name', 'year', 'rating',
-            'description', 'genre', 'category',
-        )
+        fields = ('__all__')
 
-    def get_rating(self):
-        return 5
+    def get_rating(self, obj):
+        reviews = obj.reviews.all()
+        if reviews:
+            return int(reviews.aggregate(Avg('score'))['score__avg'])
 
-    def validate_year(self, value):
-        year = d.datetime.today().year
-        if year < value:
-            raise serializers.ValidationError(
-                'Creationyear is from future? Call the timepolice!'
-            )
-        return value
+        return None
+    # def validate_year(self, value):
+    #     year = d.datetime.today().year
+    #     if year < value:
+    #         raise serializers.ValidationError(
+    #             'Creationyear is from future? Call the timepolice!'
+    #         )
+    #     return value
 
 
 class TitlesPostSerializer(serializers.ModelSerializer):
@@ -54,10 +55,14 @@ class TitlesPostSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category',)
         model = Title
 
     def validate_year(self, value):
+        if type(value) is not int:
+            raise serializers.ValidationError(
+                'Year must be integer value, not string or something.'
+            )
         year = d.datetime.today().year
         if year < value:
             raise serializers.ValidationError(

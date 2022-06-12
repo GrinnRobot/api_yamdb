@@ -1,10 +1,11 @@
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
+from rest_framework.permissions import SAFE_METHODS
 from rest_framework.pagination import LimitOffsetPagination
 
 from reviews.models import Category, Genre, Title
-from .permissions import IsMyAdminOrReadOnly
+from users.permissions import IsMyAdminOrReadOnly
 from .serializers import (CategoriesSerializer, GenresSerializer,
                           TitlesGetSerializer, TitlesPostSerializer)
 
@@ -64,6 +65,6 @@ class TitlesViewSet(viewsets.ModelViewSet):
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
-        if self.action not in ['retrieve', 'list']:
+        if self.request.method not in SAFE_METHODS:
             return TitlesPostSerializer
         return TitlesGetSerializer
