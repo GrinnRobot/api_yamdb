@@ -17,7 +17,7 @@ class ReviewsViewSet(viewsets.ModelViewSet):
     #     return context
 
     def perform_create(self, serializer):
-        # ReviewsSerializer
+        ReviewsSerializer.get_initial
         # print(f'KWARGS_VIEW: {self.kwargs}\n')
         title_id = self.kwargs.get('title_id')
         title = get_object_or_404(Title, pk=title_id)
@@ -27,9 +27,9 @@ class ReviewsViewSet(viewsets.ModelViewSet):
         # serializer.include_extra_kwargs(extra_kwargs)
         # print(f'KWARGS_SERIALIZER_MODIFIED:
         # {serializer.get_extra_kwargs(extra_kwargs)}\n')
-        print(f'INSTANCE: {serializer.instance}\n')
-        print(f'CONTEXT: {serializer.context}\n')
-        print(f'DIR: {serializer.__dir__()}')
+        # print(f'INSTANCE: {serializer.instance}\n')
+        # print(f'CONTEXT: {serializer.context}\n')
+        # print(f'DIR: {serializer.__dir__()}')
         serializer.save(title=title, author=self.request.user)
 
     def get_queryset(self):
